@@ -27,7 +27,7 @@ spec:
             "@type": type.googleapis.com/envoy.extensions.filters.http.ext_authz.v3.ExtAuthz
             http_service:
               server_uri:
-                uri: http://your-golang-service.namespace.svc.cluster.local
-                cluster: outbound|8080||your-golang-service.namespace.svc.cluster.local
+                uri: http://auth.istio-study.svc.cluster.local
+                cluster: outbound|8080||auth.istio-study.svc.cluster.local
                 timeout: 1s
               path_prefix: "/validate-header"
