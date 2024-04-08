@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: custom-header-check
+  namespace: istio-study  # 确保 EnvoyFilter 在目标服务的命名空间中
+spec:
+  workloadSelector:
+    labels:
+      app: filter-app  # 这里将 EnvoyFilter 应用到具有这些标签的工作负载
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        context: SIDECAR_INBOUND
+        # 你可以通过指定端口号来进一步限制 EnvoyFilter 的应用范围
+        # listener:
+        #   portNumber: 8080
+        #   filterChain:
+        #     filter:
+        #       name: "envoy.filters.network.http_connection_manager"
+        #       subFilter:
+        #         name: "envoy.filters.http.router"
+      patch:
+        operation: INSERT_FIRST
+        value:
+          name: envoy.filters.http.ext_authz
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.ext_authz.v3.ExtAuthz
+            http_service:
+              server_uri:
+                uri: http://your-golang-service.namespace.svc.cluster.local
+                cluster: outbound|8080||your-golang-service.namespace.svc.cluster.local
+                timeout: 1s
+              path_prefix: "/validate-header"
