@@ -8,3 +8,15 @@
 kubectl label namespace default istio-injection=enabled
 
 ```
+
+也可以手动注入，这会改造原来的 yaml 文件：
+```shell
+istioctl kube-inject -f samples/httpbin/sample-client/fortio-deploy.yaml
+```
+
+一般的惯用命令为：
+
+```shell
+kubectl apply -f <(istioctl kube-inject -f samples/httpbin/sample-client/fortio-deploy.yaml)
+```
+
