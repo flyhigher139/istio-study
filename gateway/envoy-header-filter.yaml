@@ -6,7 +6,7 @@ metadata:
 spec:
   workloadSelector:
     labels:
-      app: filter-app  # 这里将 EnvoyFilter 应用到具有这些标签的工作负载
+      filter-mark: filter-app  # 这里将 EnvoyFilter 应用到具有这些标签的工作负载
   configPatches:
     - applyTo: HTTP_FILTER
       match:

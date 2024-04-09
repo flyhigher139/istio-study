@@ -30,6 +30,7 @@ metadata:
   namespace: istio-study
   labels:
     app: filter-app
+    filter-mark: filter-app
 
 spec:
   hosts:
