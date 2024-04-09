@@ -19,26 +19,32 @@ import (
 	"net/http"
 )
 
-func headerValidationHandler(w http.ResponseWriter, r *http.Request) {
-	// 提取请求头
-	myHeader := r.Header.Get("X-My-Header")
+type Handler struct{}
 
-	// 执行自定义校验逻辑
-	if myHeader != "expected-value" {
-		// 如果校验失败，则返回 401 Unauthorized
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte("Invalid header value"))
+func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path == "/validate-header" {
+		myHeader := r.Header.Get("X-My-Header")
+		if myHeader != "expected-value" {
+			w.WriteHeader(http.StatusUnauthorized)
+			_, _ = w.Write([]byte("Invalid header value"))
+			return
+		}
+
+		// 如果校验成功，则返回 200 OK
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("Valid header"))
 		return
 	}
-
-	// 如果校验成功，则返回 200 OK
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Valid header"))
+	msg := "Url Not found"
+	log.Printf("%s %s, msg: %s",
+		r.Method, r.URL.Path, msg)
+	w.WriteHeader(http.StatusNotFound)
+	_, _ = w.Write([]byte(msg))
 }
 
 func main() {
-	http.HandleFunc("/validate-header", headerValidationHandler)
-	err := http.ListenAndServe(":8080", nil)
+	h := &Handler{}
+	err := http.ListenAndServe(":8080", h)
 	if err != nil {
 		log.Fatal(err)
 	}
