@@ -91,4 +91,14 @@ spec:
             host: httpbin
             port:
               number: 8080
+#    - match:
+#        - uri:
+#            prefix: /
+##      rewrite:
+##        uri: /
+#      route:
+#        - destination:
+#            host: httpbin
+#            port:
+#              number: 8080
 

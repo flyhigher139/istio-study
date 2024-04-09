@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: external-auth-service
+  namespace: istio-study
+subsets:
+  - addresses:
+      - ip: 198.19.249.3
+    ports:
+      - port: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-auth-service
+  namespace: istio-study
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      nodePort: 30003
+      targetPort: 8080
+
+#---
+#apiVersion: networking.istio.io/v1beta1
+#kind: ServiceEntry
+#metadata:
+#  name: external-auth-service
+#  namespace: istio-study
+#spec:
+#  hosts:
+#    - external-auth-service.istio-study.svc.cluster.local  # 外部服务的主机名
+##  location: MESH_EXTERNAL        # 指定服务是在网格外
+#  location: MESH_INTERNAL        # 指定服务是在网格外
+#  ports:
+#    - number: 8080                   # 外部服务的端口，根据实际情况修改
+#      name: http
+#      protocol: HTTP
+#  resolution: DNS                # 使用DNS解析主机

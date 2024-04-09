@@ -17,13 +17,20 @@ package main
 import (
 	"log"
 	"net/http"
+	"strings"
 )
 
 type Handler struct{}
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path == "/validate-header" {
+	h.serveHttpV1(w, r)
+	//h.serveHttpV2(w, r)
+}
+
+func (h *Handler) serveHttpV1(w http.ResponseWriter, r *http.Request) {
+	if strings.HasPrefix(r.URL.Path, "/validate-header") {
 		myHeader := r.Header.Get("X-My-Header")
+		log.Printf("%s %s, X-My-Header: %s", r.Method, r.URL.Path, myHeader)
 		if myHeader != "expected-value" {
 			w.WriteHeader(http.StatusUnauthorized)
 			_, _ = w.Write([]byte("Invalid header value"))
@@ -40,6 +47,22 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		r.Method, r.URL.Path, msg)
 	w.WriteHeader(http.StatusNotFound)
 	_, _ = w.Write([]byte(msg))
+}
+
+func (h *Handler) serveHttpV2(w http.ResponseWriter, r *http.Request) {
+	//log.Printf("%s %s", r.Method, r.URL.Path)
+	myHeader := r.Header.Get("X-My-Header")
+	log.Printf("%s %s, X-My-Header: %s", r.Method, r.URL.Path, myHeader)
+	if myHeader != "expected-value" {
+		w.WriteHeader(http.StatusUnauthorized)
+		_, _ = w.Write([]byte("Invalid header value"))
+		return
+	}
+
+	// 如果校验成功，则返回 200 OK
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write([]byte("Valid header"))
+	return
 }
 
 func main() {

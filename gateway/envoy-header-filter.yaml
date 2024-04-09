@@ -29,5 +29,18 @@ spec:
               server_uri:
                 uri: http://auth.istio-study.svc.cluster.local
                 cluster: outbound|8080||auth.istio-study.svc.cluster.local
+                # 为方便调试，改为外部可 debug 的服务
+#                uri: http://external-auth-service.istio-study.svc.cluster.local  # 修改为外部服务的URI
+#                cluster: external-auth-service.istio-study.svc.cluster.local  # 修改为外部服务cluster的名称
+#                uri: http://external-auth-service.istio-study.svc.cluster.local
+#                cluster: outbound|8080||external-auth-service.istio-study.svc.cluster.local
                 timeout: 1s
+              authorization_request:
+                allowed_headers:
+                  patterns:
+                    - exact: "x-my-header"
+                    - exact: "custom"
+                    - exact: "auth"
+#                    - exact: "x-market"
+#                    - exact: "market"
               path_prefix: "/validate-header"
