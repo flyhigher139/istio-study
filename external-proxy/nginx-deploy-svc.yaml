@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpbin-nginx
+  namespace: istio-study
+spec:
+  selector:
+    app: httpbin-nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+#      nodePort: 31001
+  type: NodePort
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpbin-nginx
+  namespace: istio-study
+  labels:
+    app: httpbin-nginx
+    zone: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpbin-nginx
+  template:
+    metadata:
+      name: httpbin-nginx
+      labels:
+        app: httpbin-nginx
+    spec:
+      containers:
+        - name: httpbin-nginx
+          image: nginx:stable-alpine-slim
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d
+              name: nginx-proxy-conf
+          ports:
+            - containerPort: 80
+      restartPolicy: Always
+      volumes:
+        - name: nginx-proxy-conf
+          configMap:
+            name: nginx-proxy
