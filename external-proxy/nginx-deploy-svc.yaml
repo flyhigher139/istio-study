@@ -32,6 +32,7 @@ spec:
       name: httpbin-nginx
       labels:
         app: httpbin-nginx
+        filter-mark: filter-app
     spec:
       containers:
         - name: httpbin-nginx

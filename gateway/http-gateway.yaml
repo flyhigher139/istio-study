@@ -150,11 +150,11 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: http-info-entry2
+  name: nginx-http-info
   namespace: istio-study
 spec:
   hosts:
-    - "external-httpbin-entry.com"
+    - "*"
   gateways:
     - http-gateway
   http:
@@ -165,6 +165,6 @@ spec:
         uri: /
       route:
         - destination:
-            host: external-httpbin-entry.com
+            host: httpbin-nginx
             port:
               number: 80
