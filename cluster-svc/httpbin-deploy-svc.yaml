@@ -51,3 +51,58 @@ spec:
       targetPort: 8080
       nodePort: 30002
   type: NodePort
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpbin2
+  namespace: istio-study
+  labels:
+    app: httpbin2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpbin2
+  template:
+    metadata:
+      name: httpbin2
+      labels:
+        app: httpbin2
+        filter-mark: filter-app2
+    spec:
+      containers:
+        - image: docker.io/kong/httpbin
+          imagePullPolicy: IfNotPresent
+          name: httpbin2
+          # Same as found in Dockerfile's CMD but using an unprivileged port
+          command:
+            - gunicorn
+            - -b
+            - 0.0.0.0:8080
+            - httpbin:app
+            - -k
+            - gevent
+          env:
+            # Tells pipenv to use a writable directory instead of $HOME
+            - name: WORKON_HOME
+              value: /tmp
+          ports:
+            - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpbin2
+  namespace: istio-study
+spec:
+  selector:
+    app: httpbin2
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+#      nodePort: 30002
+  type: NodePort

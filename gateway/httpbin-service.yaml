@@ -22,22 +22,3 @@ spec:
 #      nodePort: 30001
       targetPort: 8001
 
----
-apiVersion: networking.istio.io/v1beta1
-kind: ServiceEntry
-metadata:
-  name: local-docker-httpbin
-  namespace: istio-study
-  labels:
-    app: filter-app
-    filter-mark: filter-app
-
-spec:
-  hosts:
-    - "local-docker-httpbin.istio-study.svc.cluster.local"
-  location: MESH_INTERNAL
-  ports:
-    - number: 80
-      name: http
-      protocol: HTTP
-  resolution: DNS

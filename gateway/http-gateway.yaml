@@ -91,6 +91,28 @@ spec:
             host: httpbin
             port:
               number: 8080
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: cluster-http-info2
+  namespace: istio-study
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - http-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /http22/
+      rewrite:
+        uri: /
+      route:
+        - destination:
+            host: httpbin2
+            port:
+              number: 8080
 #    - match:
 #        - uri:
 #            prefix: /
@@ -102,3 +124,47 @@ spec:
 #            port:
 #              number: 8080
 
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: http-info-entry
+  namespace: istio-study
+spec:
+  hosts:
+    - "local-docker-httpbin.istio-study.svc.cluster.local"
+  gateways:
+    - http-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /http3/
+      rewrite:
+        uri: /
+      route:
+        - destination:
+            host: local-docker-httpbin.istio-study.svc.cluster.local
+            port:
+              number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: http-info-entry2
+  namespace: istio-study
+spec:
+  hosts:
+    - "external-httpbin-entry.com"
+  gateways:
+    - http-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /http4/
+      rewrite:
+        uri: /
+      route:
+        - destination:
+            host: external-httpbin-entry.com
+            port:
+              number: 80
