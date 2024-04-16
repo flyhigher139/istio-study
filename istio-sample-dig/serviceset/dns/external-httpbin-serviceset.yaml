@@ -1,0 +1,14 @@
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: external-httpbin2
+  namespace: istio-study
+spec:
+  hosts:
+    - "httpbin.org" # 外部服务的DNS名称
+  location: MESH_EXTERNAL
+  ports:
+    - number: 80
+      name: http
+      protocol: HTTP
+  resolution: DNS

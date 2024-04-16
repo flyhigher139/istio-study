@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: httpbin-svc2
+  namespace: istio-study
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - test-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /httpbin2
+      rewrite:
+        uri: /
+      route:
+        - destination:
+            host: httpbin.org
+            port:
+              number: 80
