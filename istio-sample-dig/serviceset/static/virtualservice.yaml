@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: httpbin-svc
+  namespace: istio-study
+spec:
+  hosts:
+    - "httpbin-external"
+  gateways:
+    - test-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /httpbin
+      rewrite:
+        uri: /
+      route:
+        - destination:
+            host: httpbin-external
+            port:
+              number: 8001

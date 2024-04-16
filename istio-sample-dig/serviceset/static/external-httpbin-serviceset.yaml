@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: external-httpbin
+  namespace: istio-study
+spec:
+  hosts:
+    - "httpbin-external" # 外部服务的DNS名称
+  endpoints:
+    - address: "198.19.249.3"
+  location: MESH_EXTERNAL
+  ports:
+    - number: 8001
+      name: tcp
+      protocol: tcp
+  resolution: STATIC
