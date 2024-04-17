@@ -9,7 +9,13 @@ spec:
   servers:
     - port:
         number: 3306
-        name: tcp-mysql
+        name: mysql-middleware
+        protocol: TCP
+      hosts:
+        - "*"
+    - port:
+        number: 6379
+        name: redis-middleware
         protocol: TCP
       hosts:
         - "*"
@@ -18,7 +24,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: middleware-gateway-svc
+  name: middleware-gateway-mysql-svc
   namespace: istio-system
 spec:
   type: LoadBalancer
@@ -27,4 +33,18 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-      name: tcp-mysql
+      name: mysql-middleware
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: middleware-gateway-redis-svc
+  namespace: istio-system
+spec:
+  type: LoadBalancer
+  selector:
+    app: istio-ingressgateway
+  ports:
+    - port: 6379
+      targetPort: 6379
+      name: redis-middleware

@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: middleware-redis
+  namespace: istio-study
+spec:
+  selector:
+    app: middleware-redis
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379
+      name: redis-middleware
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: middleware-redis
+  namespace: istio-study
+  labels:
+    app: middleware-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: middleware-redis
+  template:
+    metadata:
+      name: middleware-redis
+      labels:
+        app: middleware-redis
+    spec:
+      containers:
+        - name: middleware-redis
+          image: redis:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6379
+      restartPolicy: Always
