@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: middleware-mysql-virtualservice
+  namespace: istio-study
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - middleware-gateway
+  tcp:
+    - match:
+        - port: 3306
+      route:
+        - destination:
+            host: middleware-mysql.istio-study.svc.cluster.local
+            port:
+              number: 3306

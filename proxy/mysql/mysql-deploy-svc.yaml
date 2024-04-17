@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: middleware-mysql
+  namespace: istio-study
+spec:
+  selector:
+    app: middleware-mysql
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+      name: mysql-middleware
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: middleware-mysql
+  namespace: istio-study
+  labels:
+    app: middleware-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: middleware-mysql
+  template:
+    metadata:
+      name: middleware-mysql
+      labels:
+        app: middleware-mysql
+    spec:
+      containers:
+        - name: middleware-mysql
+          image: mysql:8.0
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mysql-storage
+          ports:
+            - containerPort: 3306
+      restartPolicy: Always
+      volumes:
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: middleware-mysql-claim
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: middleware-mysql-claim
+  namespace: istio-study
+spec:
+  storageClassName: local
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+
