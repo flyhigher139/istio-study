@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: istio-study
+spec:
+  selector:
+    app: fawkes-mysql
+  ports:
+    - protocol: TCP
+      name: mysql-prod-base
+      port: 3306
+      targetPort: 3306
+      nodePort: 31201
+  type: NodePort
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fawkes-mysql
+  namespace: istio-study
+  labels:
+    app: fawkes-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fawkes-mysql
+  template:
+    metadata:
+      name: fawkes-mysql
+      labels:
+        app: fawkes-mysql
+        mtls-mark: exclude
+    spec:
+      containers:
+        - name: fawkes-mysql
+          image: mysql:8.0
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: fawkes@2077
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3306
+      restartPolicy: Always

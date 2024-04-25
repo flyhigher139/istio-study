@@ -25,3 +25,11 @@ spec:
             port:
               number: 6379
           weight: 100
+    - match:
+        - port: 3307
+      route:
+        - destination:
+            host: mysql.istio-study.svc.cluster.local
+            port:
+              number: 3306
+          weight: 100

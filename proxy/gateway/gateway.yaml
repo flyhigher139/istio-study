@@ -19,6 +19,12 @@ spec:
         protocol: TCP
       hosts:
         - "*"
+    - port:
+        number: 3307
+        name: fawkes-mysql-middleware
+        protocol: TCP
+      hosts:
+        - "*"
 
 ---
 apiVersion: v1
@@ -48,3 +54,18 @@ spec:
     - port: 6379
       targetPort: 6379
       name: redis-middleware
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: middleware-gateway-fawkes-mysql-svc
+  namespace: istio-system
+spec:
+  type: LoadBalancer
+  selector:
+    app: istio-ingressgateway
+  ports:
+    - port: 3307
+      targetPort: 3307
+      name: fawkes-mysql-middleware

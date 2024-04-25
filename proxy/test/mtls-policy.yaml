@@ -1,0 +1,12 @@
+apiVersion: "security.istio.io/v1beta1"
+kind: "PeerAuthentication"
+metadata:
+  name: "mtls-policy"
+  namespace: istio-study
+spec:
+  selector:
+    matchLabels:
+#      app: mysql
+      mtls-mark: exclude
+  mtls:
+    mode: DISABLE
