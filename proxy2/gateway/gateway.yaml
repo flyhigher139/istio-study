@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: middleware-gateway
+  namespace: istio-study
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 3310
+        name: mysql-middleware
+        protocol: TCP
+      hosts:
+        - "*"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: middleware-gateway-mysql-svc
+  namespace: istio-system
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: 198.19.249.35
+spec:
+  type: LoadBalancer
+  selector:
+    app: istio-ingressgateway
+  ports:
+    - port: 3310
+      targetPort: 3310
+      name: mysql-middleware
